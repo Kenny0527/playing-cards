@@ -51,35 +51,47 @@ public class CardTrick {
         //   sizes, and swap the number of cards between the two.
         int upperLimit = Math.min(redPile.size(), blackPile.size()); // u
         int swapCount = rng.nextInt(upperLimit); // n
-        List<Card> headBlack = blackPile.subList(0, swapCount);
-        List<Card> headRed = redPile.subList(0, swapCount);
+        List<Card> headBlack = List.copyOf(blackPile.subList(0, swapCount));
+        List<Card> headRed = List.copyOf(redPile.subList(0, swapCount));
 
         if(swapCount != 0){
             for (int i = 0; i < swapCount; i++){
                 blackPile.set(i, headRed.get(i));
+            }
+
+            System.out.println("This is the head of black after swapping pile " + headBlack);
+            for (int i = 0; i < swapCount; i++){
                 redPile.set(i, headBlack.get(i));
             }
         }
 
-
         // count the red cards in the red deque and the black cards in the black deque and compare them.
         //   THEY MUST BE EQUAL.
         for(Card c : blackPile){
-            if(c.getSuit() == Suit.HEARTS || c.getSuit() == Suit.DIAMONDS){
+            if(c.getSuit() == Suit.SPADES || c.getSuit() == Suit.CLUBS){
                 blackCount++;
             }
+
         }
         for(Card c : redPile){
-            if(c.getSuit() == Suit.CLUBS || c.getSuit() == Suit.SPADES){
+            if(c.getSuit() == Suit.DIAMONDS || c.getSuit() == Suit.HEARTS){
                 redCount++;
             }
         }
+
         if(redCount == blackCount){
             System.out.println("Trick was done correctly");
         }
+        else{
+            System.out.println("FAILED RUN");
+        }
 
+        System.out.println(deck);
+        deck.sort();
+        System.out.println(deck);
         // TODO: Sort each deck by color, suit, and rank, and print them out. along with the counts from
         //   the previous step.
+
 
     }
 }
