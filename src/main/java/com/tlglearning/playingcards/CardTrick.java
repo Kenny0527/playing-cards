@@ -7,7 +7,79 @@ import com.tlglearning.playingcards.model.Suit;
 import java.util.*;
 
 public class CardTrick {
+
+    private Deque<Card> blackPile;
+    private Deque<Card> redPile;
+
+    public CardTrick() {
+        blackPile = new LinkedList<>();
+        redPile = new LinkedList<>();
+    }
+
     public static void main(String[] args) {
+        // Create an instance of deck and shuffle it (or not).
+        Deck deck = new Deck();
+        deck.shuffle();
+
+        // Draw cards from the deck, according to the instructions,
+        //    placing every other card in the red deque or the black deque.
+        CardTrick trick = new CardTrick();
+        trick.split(deck);
+
+        // Generate a random integer between 0 and the smaller of the two deck
+        //   sizes, and swap the number of cards between the two.
+        trick.swapCards();
+
+        // count the red cards in the red deque and the black cards in the black deque and compare them.
+        //   THEY MUST BE EQUAL.
+        // TODO: Sort each deck by color, suit, and rank, and print them out. along with the counts from
+        trick.tally();
+
+
+    }
+
+    public void split(Deck deck){
+        while (deck.getRemaining() != 0) {
+            Card indicator = deck.draw();
+            Card next = deck.draw();
+            if(indicator.getSuit().getColor() == Suit.Color.BLACK){
+                blackPile.add(next);
+            } else {
+                redPile.add(next);
+            }
+        }
+    }
+
+    public void swapCards(){
+        Random rng = new Random();
+        int swapCount = rng.nextInt(1 + Math.min(redPile.size(), blackPile.size())); // n
+
+        for (int i = 0; i < swapCount; i++){
+            redPile.add(blackPile.remove());
+            blackPile.add(redPile.remove());
+        }
+
+    }
+
+    public void tally(){
+        int blackCount = 0;
+        int redCount = 0;
+        for(Card c : blackPile){
+            if(c.getSuit().getColor() == Suit.Color.BLACK){
+                blackCount++;
+            }
+        }
+        for(Card c : redPile){
+            if(c.getSuit().getColor() == Suit.Color.RED){
+                redCount++;
+            }
+        }
+        System.out.printf("Black: count=%d, cards=%s%n", blackCount, blackPile);
+        System.out.printf("Red: count=%d, cards=%s%n", redCount, redPile);
+    }
+}
+        /*
+        // Kenny's Implementation
         // empty deque sequences for face down piles.
         List<Card> redPile = new ArrayList<>();
         List<Card> blackPile = new ArrayList<>();
@@ -32,6 +104,10 @@ public class CardTrick {
             }
         }
 
+        System.out.println(redPile);
+        System.out.println(blackPile);
+        System.out.println("------------------------------------------");
+
         // (Optional: shuffle the red deque and black deque)
         for(int i = redPile.size() - 1; i > 0; i--){
             int j = rng.nextInt(i);
@@ -47,6 +123,10 @@ public class CardTrick {
             blackPile.set(j, temp);
         }
 
+        System.out.println(redPile);
+        System.out.println(blackPile);
+        System.out.println("------------------------------------------");
+
         // Generate a random integer between 0 and the smaller of the two deck
         //   sizes, and swap the number of cards between the two.
         int upperLimit = Math.min(redPile.size(), blackPile.size()); // u
@@ -54,16 +134,15 @@ public class CardTrick {
         List<Card> headBlack = List.copyOf(blackPile.subList(0, swapCount));
         List<Card> headRed = List.copyOf(redPile.subList(0, swapCount));
 
-        if(swapCount != 0){
-            for (int i = 0; i < swapCount; i++){
+        if(swapCount != 0) {
+            for (int i = 0; i < swapCount; i++) {
                 blackPile.set(i, headRed.get(i));
-            }
-
-            System.out.println("This is the head of black after swapping pile " + headBlack);
-            for (int i = 0; i < swapCount; i++){
                 redPile.set(i, headBlack.get(i));
             }
         }
+
+        System.out.println(redPile);
+        System.out.println(blackPile);
 
         // count the red cards in the red deque and the black cards in the black deque and compare them.
         //   THEY MUST BE EQUAL.
@@ -86,12 +165,6 @@ public class CardTrick {
             System.out.println("FAILED RUN");
         }
 
-        System.out.println(deck);
-        deck.sort();
-        System.out.println(deck);
         // TODO: Sort each deck by color, suit, and rank, and print them out. along with the counts from
         //   the previous step.
-
-
-    }
-}
+         */
