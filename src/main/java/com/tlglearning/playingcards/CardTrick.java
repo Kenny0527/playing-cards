@@ -3,7 +3,6 @@ package com.tlglearning.playingcards;
 import com.tlglearning.playingcards.model.Card;
 import com.tlglearning.playingcards.model.Deck;
 import com.tlglearning.playingcards.model.Suit;
-import com.tlglearning.playingcards.util.DisplayComparator;
 
 import java.util.*;
 
@@ -82,6 +81,19 @@ public class CardTrick {
 
         System.out.printf("Black: count=%d, cards=%s%n", blackCount, blackPile);
         System.out.printf("Red: count=%d, cards=%s%n", redCount, redPile);
+    }
+}
+class DisplayComparator implements Comparator<Card> {
+
+    @Override
+    public int compare(Card card1, Card card2) {
+        int comparison = card1.getSuit().getColor()
+                .compareTo(card2.getSuit().getColor());
+        comparison = (comparison != 0) ? comparison :
+                card1.getSuit().compareTo(card2.getSuit());
+        comparison = (comparison != 0) ? comparison :
+                card1.getRank().compareTo(card2.getRank());
+        return comparison;
     }
 }
         /*
