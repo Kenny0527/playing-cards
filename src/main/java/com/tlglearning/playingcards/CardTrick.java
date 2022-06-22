@@ -3,6 +3,7 @@ package com.tlglearning.playingcards;
 import com.tlglearning.playingcards.model.Card;
 import com.tlglearning.playingcards.model.Deck;
 import com.tlglearning.playingcards.model.Suit;
+import com.tlglearning.playingcards.util.DisplayComparator;
 
 import java.util.*;
 
@@ -74,6 +75,11 @@ public class CardTrick {
                 redCount++;
             }
         }
+
+        Comparator<Card> comparator = new DisplayComparator();
+        Collections.sort((LinkedList<Card>)blackPile, comparator);
+        Collections.sort((LinkedList<Card>)redPile, comparator);
+
         System.out.printf("Black: count=%d, cards=%s%n", blackCount, blackPile);
         System.out.printf("Red: count=%d, cards=%s%n", redCount, redPile);
     }
@@ -165,6 +171,6 @@ public class CardTrick {
             System.out.println("FAILED RUN");
         }
 
-        // TODO: Sort each deck by color, suit, and rank, and print them out. along with the counts from
+        // Sort each deck by color, suit, and rank, and print them out. along with the counts from
         //   the previous step.
          */
