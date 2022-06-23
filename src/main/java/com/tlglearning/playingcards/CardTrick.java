@@ -5,15 +5,18 @@ import com.tlglearning.playingcards.model.Deck;
 import com.tlglearning.playingcards.model.Suit;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CardTrick {
 
-    private Deque<Card> blackPile;
-    private Deque<Card> redPile;
+    private final Deque<Card> blackPile = new LinkedList<>();
+    private final Deque<Card> redPile = new LinkedList<>();
+    private final Comparator<Card> displayComparator = Comparator
+            .comparing((Card c) -> c.getSuit().getColor())
+            .thenComparing((Card::getSuit))
+            .thenComparing((Card::getRank));
 
     public CardTrick() {
-        blackPile = new LinkedList<>();
-        redPile = new LinkedList<>();
     }
 
     public static void main(String[] args) {
@@ -38,11 +41,11 @@ public class CardTrick {
 
     }
 
-    public void split(Deck deck){
+    public void split(Deck deck) {
         while (deck.getRemaining() != 0) {
             Card indicator = deck.draw();
             Card next = deck.draw();
-            if(indicator.getSuit().getColor() == Suit.Color.BLACK){
+            if (indicator.getSuit().getColor() == Suit.Color.BLACK) {
                 blackPile.add(next);
             } else {
                 redPile.add(next);
@@ -50,47 +53,28 @@ public class CardTrick {
         }
     }
 
-    public void swapCards(){
+    public void swapCards() {
         Random rng = new Random();
         int swapCount = rng.nextInt(1 + Math.min(redPile.size(), blackPile.size())); // n
 
-        for (int i = 0; i < swapCount; i++){
+        for (int i = 0; i < swapCount; i++) {
             redPile.add(blackPile.remove());
             blackPile.add(redPile.remove());
         }
 
     }
 
-    public void tally(){
-        int blackCount = 0;
-        int redCount = 0;
-        for(Card c : blackPile){
-            if(c.getSuit().getColor() == Suit.Color.BLACK){
-                blackCount++;
-            }
-        }
-        for(Card c : redPile){
-            if(c.getSuit().getColor() == Suit.Color.RED){
-                redCount++;
-            }
-        }
-
-        Comparator<Card> comparator = (card1, card2) -> {
-                int comparison = card1.getSuit().getColor()
-                        .compareTo(card2.getSuit().getColor());
-                comparison = (comparison != 0) ? comparison :
-                        card1.getSuit().compareTo(card2.getSuit());
-                comparison = (comparison != 0) ? comparison :
-                        card1.getRank().compareTo(card2.getRank());
-                return comparison;
-        };
-
-        ((LinkedList<Card>) blackPile).sort(comparator);
-        ((LinkedList<Card>) redPile).sort(comparator);
-
-        System.out.printf("Black: count=%d, cards=%s%n", blackCount, blackPile);
-        System.out.printf("Red: count=%d, cards=%s%n", redCount, redPile);
+    public void tally() {
+        tallyPile(blackPile, Suit.Color.BLACK);
+        tallyPile(redPile, Suit.Color.RED);
     }
+
+    private void tallyPile(Collection<Card> pile, Suit.Color color){
+        long count = pile.stream().filter((c) -> c.getSuit().getColor() == color).count();
+        System.out.printf("%1$s pile: cards=%2$s; count of %1$s cards=%3$s.%n", color, pile
+                .stream().sorted(displayComparator).collect(Collectors.toList()), count);
+    }
+
 }
         /*
         // Kenny's Implementation
